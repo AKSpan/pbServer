@@ -28,7 +28,7 @@ public class Mongo{
     public void initMongoConnect() {
         try {
             Properties prop = new Properties();
-            prop.load(getClass().getClassLoader().getResourceAsStream("resources\\database.properties"));
+            prop.load(getClass().getClassLoader().getResourceAsStream("database.properties"));
 
             if (credential == null)
                 credential = MongoCredential.createCredential(prop.getProperty("username"), prop.getProperty("database"), prop.getProperty("password").toCharArray());

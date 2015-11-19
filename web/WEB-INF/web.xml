@@ -12,4 +12,15 @@
         <servlet-name>Login</servlet-name>
         <url-pattern>/phonebk/login</url-pattern>
     </servlet-mapping>
+
+    <servlet>
+        <servlet-name>Registration</servlet-name>
+        <servlet-class>Servlets.Registration</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>Registration</servlet-name>
+        <url-pattern>/phonebk/registration</url-pattern>
+    </servlet-mapping>
+
+
 </web-app>
