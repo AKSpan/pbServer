@@ -1,6 +1,7 @@
 package dbAPI;
 
 import Entities.AKdbEntity;
+import Entities.UsersEntity;
 import com.mongodb.DuplicateKeyException;
 import com.mongodb.MongoClient;
 import com.mongodb.MongoCredential;
@@ -78,12 +79,16 @@ public class Mongo{
      *
      * @param record Объект для записи в бд
      */
-    public void save(Object record) {
+    public void save(Object record) throws IllegalArgumentException {
         initException();
         try {
             ds.save(record);
         } catch (DuplicateKeyException ex) {
             System.err.println("Запись " + record.toString() + " дублирует данные");
+            if(record.getClass().getSimpleName().equals(UsersEntity.class.getSimpleName()))
+                throw new IllegalArgumentException("Username already exists.");
+            if(record.getClass().getSimpleName().equals(AKdbEntity.class.getSimpleName()))
+                throw new IllegalArgumentException("Cannot save record. Recording with this data already exists.");
         }
     }
 
@@ -94,13 +99,14 @@ public class Mongo{
      * @param field  Поле
      * @param value  значение
      */
-    public void update(Object record, String field, String value) {
+    public void update(Object record, String field, String value) throws Exception {
         initException();
         try {
             UpdateOperations updtOp = ds.createUpdateOperations(record.getClass());
             ds.update(record, updtOp.set(field, value));
         } catch (DuplicateKeyException ex) {
             System.err.println("Обновляемые данные дублируют другие документы.");
+            throw new Exception("Cannot update record. Updating duplicate records.");
         }
     }
 
@@ -110,7 +116,7 @@ public class Mongo{
      * @param record Обновляемая запись
      * @param updMap Обновляемые поля и их значения
      */
-    public void update(Object record, Map updMap) {
+    public void update(Object record, Map updMap) throws Exception {
         initException();
         Iterator it = updMap.entrySet().iterator();
         UpdateOperations updOP = ds.createUpdateOperations(record.getClass());
@@ -124,6 +130,7 @@ public class Mongo{
             ds.update(record, updOP);
         } catch (DuplicateKeyException ex) {
             System.err.println("Обновляемые данные дублируют другие документы.");
+            throw new Exception("Cannot update record. Updating duplicate records.");
         }
     }
 

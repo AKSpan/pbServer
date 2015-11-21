@@ -8,7 +8,7 @@ import org.mongodb.morphia.annotations.Id;
  * Создано Span 11.11.2015.
  */
 @Entity(value = "users")
-public class UsersEntity{
+public class UsersEntity implements EntityInterface{
     @Id
     private ObjectId _id;
     private String username;
@@ -19,6 +19,10 @@ public class UsersEntity{
         this.username = u;
         this.password = p;
     }
+    public ObjectId get_id() {
+        return _id;
+    }
+
     public String getUsername() {
         return username;
     }
@@ -33,5 +37,14 @@ public class UsersEntity{
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    @Override
+    public String toString() {
+        return "UsersEntity{" +
+                "_id=" + get_id() +
+                ", username='" + username + '\'' +
+                ", password='" + password + '\'' +
+                '}';
     }
 }

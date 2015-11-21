@@ -11,7 +11,7 @@ import java.util.List;
  * Создано Span 29.10.2015.
  */
 @Entity(value = "dict")
-public class AKdbEntity{
+public class AKdbEntity implements EntityInterface{
     @Id
     private ObjectId _id;
     private String name;
@@ -45,7 +45,7 @@ public class AKdbEntity{
         this.social = social;
     }
 
-    private ObjectId get_id() {
+    public ObjectId get_id() {
         return _id;
     }
 

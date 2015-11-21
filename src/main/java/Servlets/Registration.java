@@ -35,7 +35,7 @@ public class Registration extends HttpServlet {
             json = GetDataFromRequest.getJSON(request.getReader());
             System.out.println("request json " + json);
             if (json.has("user")) {
-                user = json.getJSONObject("user").getString("name");
+                user = json.getJSONObject("user").getString("user");
                 pass = json.getJSONObject("user").getString("pass");
                 System.out.println(user + " / " + pass);
 
@@ -52,9 +52,14 @@ public class Registration extends HttpServlet {
                 answer.put("code", 400);
             }
         }
-        catch (Exception e)
+        catch (IllegalArgumentException e)
         {
-            answer.put("answer", "Server error: " + e.toString());
+            answer.put("answer", e.getMessage());
+            answer.put("code", 400);
+        }
+        catch (NullPointerException e)
+        {
+            answer.put("answer", "Server error: " + e.getMessage());
             answer.put("code", 500);
             e.getStackTrace();
         }
