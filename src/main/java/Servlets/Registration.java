@@ -16,7 +16,7 @@ import java.io.PrintWriter;
 /**
  * Created by Alexey on 19.11.2015.
  */
-@WebServlet(name = "registration")
+@WebServlet("/phonebk/registration")
 public class Registration extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         worker(request, response);

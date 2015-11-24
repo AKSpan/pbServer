@@ -4,7 +4,7 @@
          xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd"
          version="3.1">
 
-    <servlet>
+    <!--<servlet>
         <servlet-name>Login</servlet-name>
         <servlet-class>Servlets.Login</servlet-class>
     </servlet>
@@ -22,5 +22,20 @@
         <url-pattern>/phonebk/registration</url-pattern>
     </servlet-mapping>
 
-
+    <servlet>
+        <servlet-name>Test</servlet-name>
+        <servlet-class>Servlets.Test</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>Test</servlet-name>
+        <url-pattern>phonebk/test</url-pattern>
+    </servlet-mapping>-->
+  <!--  <servlet>
+        <servlet-name>GetContacts</servlet-name>
+        <servlet-class>Servlets.GetContacts</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>GetContacts</servlet-name>
+        <url-pattern>/phonebk/getcontacts</url-pattern>
+    </servlet-mapping>-->
 </web-app>

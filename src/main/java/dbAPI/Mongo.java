@@ -50,9 +50,11 @@ public class Mongo{
         }
     }
 
+
     /**
      * Получение всех данных
      *
+     * @param clazz сущность (ex: new AKdbEntity())
      * @return {@link List}<{@link Object}>
      */
     public List<?> find(Object clazz) {
@@ -70,7 +72,9 @@ public class Mongo{
      */
     public List<?> find(Object clazz,String field, String value) {
         initException();
-        return ds.find(clazz.getClass()).field(field).contains(value).asList();
+        if(clazz.getClass().getSimpleName().equals(AKdbEntity.class.getSimpleName()))
+            return ds.find(clazz.getClass()).field(field).contains(value).retrievedFields(false,"owner","_id").asList();
+        return ds.find(clazz.getClass()).field(field).contains(value).retrievedFields(false,"_id").asList();
     }
 
 

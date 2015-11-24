@@ -5,7 +5,7 @@ import org.mongodb.morphia.annotations.Entity;
 import org.mongodb.morphia.annotations.Id;
 
 /**
- * Создано Span 11.11.2015.
+ * РЎРѕР·РґР°РЅРѕ Span 11.11.2015.
  */
 @Entity(value = "users")
 public class UsersEntity implements EntityInterface{

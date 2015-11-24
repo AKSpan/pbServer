@@ -6,6 +6,7 @@ import dbAPI.Mongo;
 import org.json.JSONObject;
 import utils.GetDataFromRequest;
 
+import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -18,7 +19,7 @@ import java.util.List;
 /**
  * Создано Span 09.11.2015.
  */
-@WebServlet(name = "login")
+@WebServlet(urlPatterns = "/phonebk/login", name="Login")
 public class Login extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         worker(request, response);
@@ -42,10 +43,13 @@ public class Login extends HttpServlet {
 
                 Mongo myMongoServ = new Mongo();
                 myMongoServ.initMongoConnect();
-                List<UsersEntity> users = (List<UsersEntity>) myMongoServ.find(new UsersEntity(), "username", "Span");
+                List<UsersEntity> users = (List<UsersEntity>) myMongoServ.find(new UsersEntity(), "username", user);
                 if (users.get(0).getPassword().equals(pass)) {
                     answer.put("answer", "Pass is correct");
                     answer.put("code", 200);
+                  /*  request.setAttribute("user",user);
+                    RequestDispatcher dispatcher = getServletContext().getRequestDispatcher("/phonebk/getcontacts");
+                    dispatcher.forward(request, response);*/
                 } else {
                     answer.put("answer", "Pass isn't correct");
                     answer.put("code", 401);
