@@ -66,15 +66,14 @@ public class Mongo{
     /**
      * Поиск данных по полю
      *
+     * @param clazz тип сущности (Объект класса (ех. new AKdbEntity()))
      * @param field Поле по которому необх. искать
      * @param value Значение поля
      * @return {@link List}<{@link AKdbEntity}>
      */
     public List<?> find(Object clazz,String field, String value) {
         initException();
-        if(clazz.getClass().getSimpleName().equals(AKdbEntity.class.getSimpleName()))
-            return ds.find(clazz.getClass()).field(field).contains(value).retrievedFields(false,"owner","_id").asList();
-        return ds.find(clazz.getClass()).field(field).contains(value).retrievedFields(false,"_id").asList();
+        return ds.find(clazz.getClass()).field(field).contains(value).asList();
     }
 
 

@@ -16,7 +16,7 @@ import java.io.PrintWriter;
 /**
  * Created by Alexey on 19.11.2015.
  */
-@WebServlet("/phonebk/registration")
+@WebServlet(name ="Registration", urlPatterns = "/phonebk/registration", displayName = "Registration")
 public class Registration extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         worker(request, response);

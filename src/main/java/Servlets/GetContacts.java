@@ -1,6 +1,7 @@
 package Servlets;
 
 import Entities.AKdbEntity;
+import Entities.UsersEntity;
 import dbAPI.Mongo;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -8,9 +9,7 @@ import utils.GetDataFromRequest;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.*;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.List;
@@ -31,9 +30,54 @@ public class GetContacts extends HttpServlet {
     private void worker(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         System.out.println("getContacts");
         JSONObject joReq = GetDataFromRequest.getJSON(request.getReader());
-        String user ="";
+        String owner = "";
         JSONObject answer = new JSONObject();
-        if(joReq.has("user")) {
+
+        Cookie[] cookies = request.getCookies();
+        String session = "unreachable-session";
+        if (cookies != null) {
+            for (Cookie cookie : cookies) {
+                if (cookie.getName().equals("JSESSIONID"))
+                    session = cookie.getValue();
+            }
+            try {
+                Mongo mongo = new Mongo();
+                mongo.initMongoConnect();
+                List<UsersEntity> currUser = (List<UsersEntity>) mongo.find(new UsersEntity(), "session", session);
+                if (currUser.size() > 0)
+                    owner = currUser.get(0).getUsername();
+                List<AKdbEntity> contacts = (List<AKdbEntity>) mongo.find(new AKdbEntity(),"owner",owner);
+                JSONArray jaAnswer = new JSONArray();
+                for(AKdbEntity contact:contacts)
+                {
+                    jaAnswer.put(contact.toJSON());
+                }
+                System.out.println(jaAnswer.toString());
+                answer.put("answer",jaAnswer);
+                answer.put("code",200);
+
+
+
+            }
+            catch (Exception ex)
+            {
+                System.out.println(ex.getMessage());
+            }
+
+
+
+
+
+
+
+
+        }
+        else
+        {
+            /**Нет кук - нет доступа**/
+        }
+
+        /*if(joReq.has("user")) {
             user = joReq.getString("user");
 
             Mongo mongo = new Mongo();
@@ -44,15 +88,15 @@ public class GetContacts extends HttpServlet {
 
             for (AKdbEntity aken : contacts) {
                 jsonArray.put(aken.toJSON());
-            /*answer.append()
-            jsonArray.put()*/
+            *//*answer.append()
+            jsonArray.put()*//*
             }
             answer.put("contacts", jsonArray);
         }
         else
         {
 
-        }
+        }*/
         PrintWriter out = response.getWriter();
         out.println(answer);
     }
