@@ -2,6 +2,7 @@ package Servlets;
 
 import Entities.AKdbEntity;
 import Entities.UsersEntity;
+import com.mongodb.util.JSON;
 import dbAPI.Mongo;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -46,30 +47,45 @@ public class GetContacts extends HttpServlet {
                 List<UsersEntity> currUser = (List<UsersEntity>) mongo.find(new UsersEntity(), "session", session);
                 if (currUser.size() > 0)
                     owner = currUser.get(0).getUsername();
-                List<AKdbEntity> contacts = (List<AKdbEntity>) mongo.find(new AKdbEntity(),"owner",owner);
+                List<AKdbEntity> DBcontacts = (List<AKdbEntity>) mongo.find(new AKdbEntity(),"owner",owner);
                 JSONArray jaAnswer = new JSONArray();
-                for(AKdbEntity contact:contacts)
+                for(AKdbEntity contact:DBcontacts)
                 {
+                    ///TODO: Смотри ниже
+                    /**
+                     * Нужна группировка по алфавиту (фамилии) примерный вид
+                     * answer:[
+                     *         {
+                     *              group_letter:A,
+                     *              contacts:[{},{},{}]
+                     *         },
+                     *         {
+                     *              group_letter:Z
+                     *              contacts:[{},{},{}]
+                     *         }
+                     *         ,
+                     *         {
+                     *              group_letter:0
+                     *              contacts:[{},{},{}]
+                     *         }
+                     *         ,
+                     *         {
+                     *              group_letter:9
+                     *              contacts:[{},{},{}]
+                     *         }
+                     *      ]
+                     */
+
                     jaAnswer.put(contact.toJSON());
                 }
-                System.out.println(jaAnswer.toString());
                 answer.put("answer",jaAnswer);
                 answer.put("code",200);
-
-
 
             }
             catch (Exception ex)
             {
                 System.out.println(ex.getMessage());
             }
-
-
-
-
-
-
-
 
         }
         else

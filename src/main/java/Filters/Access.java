@@ -13,7 +13,7 @@ import java.io.IOException;
 public class Access implements Filter {
     public void destroy() {
     }
-
+///TODO: –азобратьс€, почему при первом запуске, при нажатии на вход, пропускает до получени€ контактов!
     public void doFilter(ServletRequest req, ServletResponse resp, FilterChain chain) throws ServletException, IOException {
         System.out.println("Filter!");
         HttpServletRequest hsr = (HttpServletRequest) req;

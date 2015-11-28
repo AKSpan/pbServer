@@ -22,6 +22,7 @@ public class AKdbEntity implements EntityInterface {
     private String phone;
     private String avatar;
     private String owner;
+    private String group_letter;
     @Embedded
     private
     List<Social> social;
@@ -97,6 +98,14 @@ public class AKdbEntity implements EntityInterface {
         this.owner = owner;
     }
 
+    public String getGroupLetter() {
+        return group_letter;
+    }
+
+    public void setGroupLetter(String group_letter) {
+        this.group_letter = group_letter;
+    }
+
     public JSONObject toJSON() {
         JSONObject jo = new JSONObject();
         jo.put("name",getName());
@@ -107,6 +116,7 @@ public class AKdbEntity implements EntityInterface {
         jo.put("avatar",getAvatar());
         jo.put("owner",getOwner());
         jo.put("social",getSocial());
+        jo.put("group_letter",getGroupLetter());
         return jo;
     }
 
@@ -120,8 +130,9 @@ public class AKdbEntity implements EntityInterface {
                 ", birthday='" + getBirthday() + '\'' +
                 ", phone='" + getPhone() + '\'' +
                 ", avatar='" + getAvatar() + '\'' +
-                ", social= [" + getSocial() +
-                ", owner= [" + getOwner() +
-                "]}";
+                ", social= " + getSocial() +
+                ", owner= " + getOwner() +
+                ", group_letter= " + getGroupLetter() +
+                "}";
     }
 }
