@@ -3,7 +3,7 @@ package Entities;
 import org.mongodb.morphia.annotations.Embedded;
 
 @Embedded
-public class Social {
+class Social {
     private Social() {
     }
 

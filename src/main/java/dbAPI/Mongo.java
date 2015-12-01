@@ -11,7 +11,6 @@ import org.mongodb.morphia.Morphia;
 import org.mongodb.morphia.query.Query;
 import org.mongodb.morphia.query.UpdateOperations;
 
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.*;
@@ -74,10 +73,13 @@ public class Mongo{
      */
     public List<?> find(Object clazz,String field, String value) {
         initException();
-        if(clazz.getClass().getSimpleName().equals(AKdbEntity.class.getSimpleName()))
+        if(clazz.getClass().getSimpleName().equals(AKdbEntity.class.getSimpleName())) {
             return ds.find(clazz.getClass()).order("surname").field(field).contains(value).asList();
+        }
         return ds.find(clazz.getClass()).field(field).contains(value).asList();
     }
+
+
 
 
     /**

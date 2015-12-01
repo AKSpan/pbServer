@@ -4,8 +4,6 @@ import org.bson.types.ObjectId;
 import org.mongodb.morphia.annotations.Entity;
 import org.mongodb.morphia.annotations.Id;
 
-import java.util.Date;
-
 /**
  * Создано Span 11.11.2015.
  */
@@ -48,7 +46,7 @@ public class UsersEntity implements EntityInterface {
         this.password = password;
     }
 
-    public String getSession() {
+    private String getSession() {
         return session;
     }
 

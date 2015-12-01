@@ -55,7 +55,7 @@ public class AKdbEntity implements EntityInterface {
         return name == null ? "" : name;
     }
 
-    private String getSurname() {
+    public String getSurname() {
         return surname == null ? "" : surname;
     }
 
@@ -90,7 +90,7 @@ public class AKdbEntity implements EntityInterface {
         }
     }
 
-    public String getOwner() {
+    private String getOwner() {
         return owner == null ? "" : owner;
     }
 
@@ -98,7 +98,7 @@ public class AKdbEntity implements EntityInterface {
         this.owner = owner;
     }
 
-    public String getGroupLetter() {
+    private String getGroupLetter() {
         return group_letter;
     }
 

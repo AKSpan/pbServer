@@ -6,7 +6,6 @@ import dbAPI.Mongo;
 import org.json.JSONObject;
 import utils.GetDataFromRequest;
 
-import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.Cookie;
@@ -15,8 +14,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
@@ -33,7 +30,7 @@ public class Login extends HttpServlet {
         worker(request, response);
     }
 
-    private void worker(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    private void worker(HttpServletRequest request, HttpServletResponse response) throws IOException {
         System.out.println("Login servlet!");
         String session = null;
         JSONObject json, answer = new JSONObject();
@@ -76,7 +73,8 @@ public class Login extends HttpServlet {
                 e.getStackTrace();
             }
         } else {
-
+            answer.put("answer", "Unauthorized!");
+            answer.put("code", 401);
         }
 
         PrintWriter out = response.getWriter();

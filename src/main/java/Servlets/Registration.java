@@ -14,7 +14,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 
 /**
- * Created by Alexey on 19.11.2015.
+ * Создано Alexey 19.11.2015.
  */
 @WebServlet(name ="Registration", urlPatterns = "/phonebk/registration", displayName = "Registration")
 public class Registration extends HttpServlet {
@@ -26,7 +26,7 @@ public class Registration extends HttpServlet {
 
     }
 
-    private void worker(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    private void worker(HttpServletRequest request, HttpServletResponse response) throws IOException {
         System.out.println("registration");
         JSONObject json, answer = new JSONObject();
         String user, pass;

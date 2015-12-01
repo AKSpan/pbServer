@@ -15,7 +15,7 @@ public class GetDataFromRequest {
             }
             joResult = new JSONObject(sb.toString());
         } catch (Exception e) {
-            System.out.println(e);
+            System.out.println(e.getMessage());
         }
         return joResult;
 
