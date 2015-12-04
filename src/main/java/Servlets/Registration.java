@@ -16,7 +16,7 @@ import java.io.PrintWriter;
 /**
  * Создано Alexey 19.11.2015.
  */
-@WebServlet(name ="Registration", urlPatterns = "/phonebk/registration", displayName = "Registration")
+@WebServlet(name = "Registration", urlPatterns = "/Registration", displayName = "Registration")
 public class Registration extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         worker(request, response);
@@ -30,39 +30,34 @@ public class Registration extends HttpServlet {
         System.out.println("registration");
         JSONObject json, answer = new JSONObject();
         String user, pass;
-        try
-        {
-            json = GetDataFromRequest.getJSON(request.getReader());
-            System.out.println("request json " + json);
-            if (json.has("user")) {
-                user = json.getJSONObject("user").getString("user");
-                pass = json.getJSONObject("user").getString("pass");
+        try {
+            if (request.getAttribute("user") != null && request.getAttribute("pass") != null) {
+                user = request.getAttribute("user").toString();
+                pass = request.getAttribute("pass").toString();
                 System.out.println(user + " / " + pass);
 
                 Mongo myMongoServ = new Mongo();
                 myMongoServ.initMongoConnect();
 
-                UsersEntity newUser = new UsersEntity(user,pass);
+                UsersEntity newUser = new UsersEntity(user, pass);
                 myMongoServ.save(newUser);
                 answer.put("answer", "Success registration");
-                answer.put("code",200);
+                answer.put("code", 200);
 
             } else {
-                answer.put("answer", "Bad request. No field \"user\" in json!");
+                answer.put("answer", "\"Bad request. No fields \"user\" or \"pass\" in request!");
                 answer.put("code", 400);
             }
-        }
-        catch (IllegalArgumentException e)
-        {
+        } catch (IllegalArgumentException e) {
             answer.put("answer", e.getMessage());
             answer.put("code", 400);
-        }
-        catch (NullPointerException e)
-        {
+        } catch (NullPointerException e) {
             answer.put("answer", "Server error: " + e.getMessage());
             answer.put("code", 500);
             e.getStackTrace();
         }
+
+
         PrintWriter out = response.getWriter();
         out.write(answer.toString());
     }

@@ -5,13 +5,11 @@ import Entities.UsersEntity;
 import dbAPI.Mongo;
 import org.json.JSONArray;
 import org.json.JSONObject;
+import utils.GetDataFromRequest;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.*;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
@@ -22,7 +20,7 @@ import java.util.Map;
 /**
  * Создано Span 24.11.2015.
  */
-@WebServlet(name = "GetContacts", urlPatterns = "/phonebk/getcontacts", displayName = "GetContacts")
+@WebServlet(name = "GetContacts", urlPatterns = "/GetContacts", displayName = "GetContacts")
 public class GetContacts extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         worker(request, response);
@@ -34,70 +32,81 @@ public class GetContacts extends HttpServlet {
 
     private void worker(HttpServletRequest request, HttpServletResponse response) throws IOException {
         System.out.println("getContacts");
-        //JSONObject joReq = GetDataFromRequest.getJSON(request.getReader());
+
         String owner = "";
-        JSONObject answer = new JSONObject(),answerObj;
+        JSONObject answer = new JSONObject(), answerObj;
         JSONArray contactsAnswer, answerArray = new JSONArray();
 
         Cookie[] cookies = request.getCookies();
-        String session = "unreachable-session";
+        String session = null;
+        HttpSession session2 = request.getSession(false);
+        System.out.println("Contacts sess= "+session2.getId());
         if (cookies != null) {
             for (Cookie cookie : cookies) {
                 if (cookie.getName().equals("JSESSIONID"))
                     session = cookie.getValue();
             }
-            try {
-                Mongo mongo = new Mongo();
-                mongo.initMongoConnect();
-                List<UsersEntity> currUser = (List<UsersEntity>) mongo.find(new UsersEntity(), "session", session);
-                if (currUser.size() > 0)
-                    owner = currUser.get(0).getUsername();
+            if (session == null) {
+                answer.put("answer", "Invalid cookies!");
+                answer.put("code", 400);
+            } else {
+                try {
+                    Mongo mongo = new Mongo();
+                    mongo.initMongoConnect();
+                    List<UsersEntity> currUser = (List<UsersEntity>) mongo.find(new UsersEntity(), "session", session);
+                    if (currUser.size() > 0)
+                        owner = currUser.get(0).getUsername();
 
+                    JSONObject joReq = GetDataFromRequest.getJSON(request.getReader());
+                    System.out.println("json getcontacts = "+joReq);
 
-                List<AKdbEntity> DBcontacts = (List<AKdbEntity>) mongo.find(new AKdbEntity(), "owner", owner);
-                /***Группировка контактов по алфавиту***/
-                Map<String, List<AKdbEntity>> map = new HashMap<String, List<AKdbEntity>>();
-                for (AKdbEntity contact : DBcontacts) {
-                    String key = contact.getSurname().substring(0, 1);
-                    if (map.containsKey(key)) {
-                        List<AKdbEntity> list = map.get(key);
-                        list.add(contact);
-                    } else {
-                        List<AKdbEntity> list = new ArrayList<AKdbEntity>();
-                        list.add(contact);
-                        map.put(key, list);
+                    List<AKdbEntity> DBcontacts = (List<AKdbEntity>) mongo.find(new AKdbEntity(), "owner", owner);
+                    /***Группировка контактов по алфавиту***/
+                    Map<String, List<AKdbEntity>> map = new HashMap<String, List<AKdbEntity>>();
+                    for (AKdbEntity contact : DBcontacts) {
+                        String key = contact.getSurname().substring(0, 1);
+                        if (map.containsKey(key)) {
+                            List<AKdbEntity> list = map.get(key);
+                            list.add(contact);
+                        } else {
+                            List<AKdbEntity> list = new ArrayList<AKdbEntity>();
+                            list.add(contact);
+                            map.put(key, list);
+                        }
                     }
+                    System.out.println("[MAP]: " + map);
+                    /*!*Группировка контактов по алфавиту*!*/
+
+
+                    for (Map.Entry<String, List<AKdbEntity>> stringListEntry : map.entrySet()) {
+                        Map.Entry thisEntry = (Map.Entry) stringListEntry;
+                        String currKey = thisEntry.getKey().toString();
+                        List<AKdbEntity> currValue = (ArrayList<AKdbEntity>) thisEntry.getValue();
+
+                        contactsAnswer = new JSONArray();
+                        for (AKdbEntity t : currValue)
+                            contactsAnswer.put(t.toJSON());
+                        answerObj = new JSONObject();
+                        answerObj.put("group_letter", currKey);
+                        answerObj.put("contacts", contactsAnswer);
+
+                        answerArray.put(answerObj);
+                    }
+                    answer.put("answer", answerArray);
+                    answer.put("code", 200);
+
+                } catch (Exception ex) {
+                    answer.put("answer", "Server error: " + ex.toString());
+                    answer.put("code", 500);
+                    ex.getStackTrace();
                 }
-                System.out.println(map);
-                /*****/
-
-                for (Map.Entry<String, List<AKdbEntity>> stringListEntry : map.entrySet()) {
-                    Map.Entry thisEntry = (Map.Entry) stringListEntry;
-                    String currKey = thisEntry.getKey().toString();
-                    List<AKdbEntity> currValue = (ArrayList<AKdbEntity>) thisEntry.getValue();
-
-                    contactsAnswer = new JSONArray();
-                    for (AKdbEntity t : currValue)
-                        contactsAnswer.put(t.toJSON());
-                    answerObj = new JSONObject();
-                    answerObj.put("group_letter", currKey);
-                    answerObj.put("contacts", contactsAnswer);
-
-                    answerArray.put(answerObj);
-                }
-
-                answer.put("answer", answerArray);
-                answer.put("code", 200);
-
-            } catch (Exception ex) {
-                System.out.println(ex.getMessage());
             }
-
         } else {
-            answer.put("code", 400);
+            answer.put("code", 401);
+            answer.put("answer", "Unauthorized");
+            //answer.put("action", "logout");
             /**Нет кук - нет доступа**/
         }
-
         PrintWriter out = response.getWriter();
         out.println(answer);
     }
