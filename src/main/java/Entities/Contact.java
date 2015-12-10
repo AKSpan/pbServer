@@ -1,6 +1,9 @@
 package Entities;
 
+import com.google.gson.Gson;
 import org.bson.types.ObjectId;
+import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.mongodb.morphia.annotations.Embedded;
 import org.mongodb.morphia.annotations.Entity;
@@ -12,31 +15,32 @@ import java.util.List;
  * Создано Span 29.10.2015.
  */
 @Entity(value = "dict")
-public class AKdbEntity implements EntityInterface {
+public class Contact implements EntityInterface {
     @Id
     private ObjectId _id;
     private String name;
     private String surname;
     private String thirdname;
     private String birthday;
-    private String phone;
+    @Embedded
+    private
+    List<Phone> phone;
     private String avatar;
     private String owner;
-    private String group_letter;
     @Embedded
     private
     List<Social> social;
 
-    public AKdbEntity() {
+    public Contact() {
     }
 
-    public AKdbEntity(String name,
-                      String surname,
-                      String thirdname,
-                      String birthday,
-                      String phone,
-                      String avatar,
-                      String owner, List<Social> social) {
+    public Contact(String name,
+                   String surname,
+                   String thirdname,
+                   String birthday,
+                   List<Phone> phone,
+                   String avatar,
+                   String owner, List<Social> social) {
         this.name = name;
         this.surname = surname;
         this.thirdname = thirdname;
@@ -67,26 +71,39 @@ public class AKdbEntity implements EntityInterface {
         return birthday == null ? "" : birthday;
     }
 
-    private String getPhone() {
-        return phone == null ? "" : phone;
+    private JSONArray getPhone() {
+        if (phone == null)
+            return new JSONArray();
+        else {
+            JSONArray retJA = new JSONArray();
+            JSONObject jo;
+            for (int i = 0; i < phone.size(); i++) {
+                jo = new JSONObject();
+                jo.put("name", phone.get(i).getPhoneName());
+                jo.put("number", phone.get(i).getPhoneNumber());
+                retJA.put(jo);
+            }
+            return retJA;
+        }
     }
 
     private String getAvatar() {
         return avatar == null ? "" : avatar;
     }
 
-    private String getSocial() {
+    private JSONArray getSocial() {
         if (social == null)
-            return "[]";
+            return new JSONArray();
         else {
-            String s = "[";
-            for (int i = 0; i< social.size();i++) {
-
-                s += "{" + social.get(i).getSocialName() + ": " + social.get(i).getSocialURL() + "}";
-                if(i<social.size()-1)
-                    s+=",";
+            JSONArray retJA = new JSONArray();
+            JSONObject jo;
+            for (int i = 0; i < social.size(); i++) {
+                jo = new JSONObject();
+                jo.put("name", social.get(i).getSocialName());
+                jo.put("url", social.get(i).getSocialURL());
+                retJA.put(jo);
             }
-            return s+"]";
+            return retJA;
         }
     }
 
@@ -98,31 +115,20 @@ public class AKdbEntity implements EntityInterface {
         this.owner = owner;
     }
 
-    private String getGroupLetter() {
-        return group_letter;
-    }
-
-    public void setGroupLetter(String group_letter) {
-        this.group_letter = group_letter;
-    }
-
     public JSONObject toJSON() {
-        JSONObject jo = new JSONObject();
-        jo.put("name",getName());
-        jo.put("surname",getSurname());
-        jo.put("thirdname",getThirdname());
-        jo.put("birthday",getBirthday());
-        jo.put("phone",getPhone());
-        jo.put("avatar",getAvatar());
-        jo.put("owner",getOwner());
-        jo.put("social",getSocial());
-        jo.put("group_letter",getGroupLetter());
-        return jo;
+        JSONObject request = null;
+        Gson gson = new Gson();
+        try {
+            request = new JSONObject(gson.toJson(this));
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return request;
     }
 
     @Override
     public String toString() {
-        return "AKdbEntity{" +
+        return "Contact{" +
                 "_id=" + get_id() +
                 ", name='" + getName() + '\'' +
                 ", surname='" + getSurname() + '\'' +
@@ -132,7 +138,6 @@ public class AKdbEntity implements EntityInterface {
                 ", avatar='" + getAvatar() + '\'' +
                 ", social= " + getSocial() +
                 ", owner= " + getOwner() +
-                ", group_letter= " + getGroupLetter() +
                 "}";
     }
 }

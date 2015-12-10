@@ -1,6 +1,6 @@
 package dbAPI;
 
-import Entities.AKdbEntity;
+import Entities.Contact;
 import Entities.UsersEntity;
 import com.mongodb.DuplicateKeyException;
 import com.mongodb.MongoClient;
@@ -53,12 +53,12 @@ public class Mongo{
     /**
      * Получение всех данных
      *
-     * @param clazz сущность (ex: new AKdbEntity())
+     * @param clazz сущность (ex: new Contact())
      * @return {@link List}<{@link Object}>
      */
     public List<?> find(Object clazz) {
         initException();
-        if(clazz.getClass().getSimpleName().equals(AKdbEntity.class.getSimpleName()))
+        if(clazz.getClass().getSimpleName().equals(Contact.class.getSimpleName()))
             return ds.find(clazz.getClass()).order("surname").asList();
         return ds.find(clazz.getClass()).asList();
     }
@@ -66,14 +66,14 @@ public class Mongo{
     /**
      * Поиск данных по полю
      *
-     * @param clazz тип сущности (Объект класса (ех. new AKdbEntity()))
+     * @param clazz тип сущности (Объект класса (ех. new Contact()))
      * @param field Поле по которому необх. искать
      * @param value Значение поля
-     * @return {@link List}<{@link AKdbEntity}>
+     * @return {@link List}<{@link Contact}>
      */
     public List<?> find(Object clazz,String field, String value) {
         initException();
-        if(clazz.getClass().getSimpleName().equals(AKdbEntity.class.getSimpleName())) {
+        if(clazz.getClass().getSimpleName().equals(Contact.class.getSimpleName())) {
             return ds.find(clazz.getClass()).order("surname").field(field).contains(value).asList();
         }
         return ds.find(clazz.getClass()).field(field).contains(value).asList();
@@ -95,7 +95,7 @@ public class Mongo{
             System.err.println("Запись " + record.toString() + " дублирует данные");
             if(record.getClass().getSimpleName().equals(UsersEntity.class.getSimpleName()))
                 throw new IllegalArgumentException("Username already exists.");
-            if(record.getClass().getSimpleName().equals(AKdbEntity.class.getSimpleName()))
+            if(record.getClass().getSimpleName().equals(Contact.class.getSimpleName()))
                 throw new IllegalArgumentException("Cannot save record. Recording with this data already exists.");
         }
     }
@@ -150,13 +150,13 @@ public class Mongo{
      */
     public void delete(String field, String value) {
         initException();
-        ds.delete(ds.createQuery(AKdbEntity.class).filter(field, value));
+        ds.delete(ds.createQuery(Contact.class).filter(field, value));
     }
 
     public void delete(Map delMap) {
         initException();
         Iterator it = delMap.entrySet().iterator();
-        Query<AKdbEntity> query = ds.createQuery(AKdbEntity.class);
+        Query<Contact> query = ds.createQuery(Contact.class);
         while (it.hasNext()) {
             Map.Entry pair = (Map.Entry) it.next();
             System.out.println(pair.getKey() + " = " + pair.getValue());

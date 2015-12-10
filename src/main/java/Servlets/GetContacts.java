@@ -1,6 +1,6 @@
 package Servlets;
 
-import Entities.AKdbEntity;
+import Entities.Contact;
 import Entities.UsersEntity;
 import dbAPI.Mongo;
 import org.json.JSONArray;
@@ -60,16 +60,16 @@ public class GetContacts extends HttpServlet {
                     JSONObject joReq = GetDataFromRequest.getJSON(request.getReader());
                     System.out.println("json getcontacts = "+joReq);
 
-                    List<AKdbEntity> DBcontacts = (List<AKdbEntity>) mongo.find(new AKdbEntity(), "owner", owner);
+                    List<Contact> DBcontacts = (List<Contact>) mongo.find(new Contact(), "owner", owner);
                     /***Группировка контактов по алфавиту***/
-                    Map<String, List<AKdbEntity>> map = new HashMap<String, List<AKdbEntity>>();
-                    for (AKdbEntity contact : DBcontacts) {
+                    Map<String, List<Contact>> map = new HashMap<>();
+                    for (Contact contact : DBcontacts) {
                         String key = contact.getSurname().substring(0, 1);
                         if (map.containsKey(key)) {
-                            List<AKdbEntity> list = map.get(key);
+                            List<Contact> list = map.get(key);
                             list.add(contact);
                         } else {
-                            List<AKdbEntity> list = new ArrayList<AKdbEntity>();
+                            List<Contact> list = new ArrayList<>();
                             list.add(contact);
                             map.put(key, list);
                         }
@@ -78,13 +78,13 @@ public class GetContacts extends HttpServlet {
                     /*!*Группировка контактов по алфавиту*!*/
 
 
-                    for (Map.Entry<String, List<AKdbEntity>> stringListEntry : map.entrySet()) {
+                    for (Map.Entry<String, List<Contact>> stringListEntry : map.entrySet()) {
                         Map.Entry thisEntry = (Map.Entry) stringListEntry;
                         String currKey = thisEntry.getKey().toString();
-                        List<AKdbEntity> currValue = (ArrayList<AKdbEntity>) thisEntry.getValue();
+                        List<Contact> currValue = (ArrayList<Contact>) thisEntry.getValue();
 
                         contactsAnswer = new JSONArray();
-                        for (AKdbEntity t : currValue)
+                        for (Contact t : currValue)
                             contactsAnswer.put(t.toJSON());
                         answerObj = new JSONObject();
                         answerObj.put("group_letter", currKey);
