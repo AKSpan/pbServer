@@ -39,8 +39,6 @@ public class GetContacts extends HttpServlet {
 
         Cookie[] cookies = request.getCookies();
         String session = null;
-        HttpSession session2 = request.getSession(false);
-        System.out.println("Contacts sess= "+session2.getId());
         if (cookies != null) {
             for (Cookie cookie : cookies) {
                 if (cookie.getName().equals("JSESSIONID"))

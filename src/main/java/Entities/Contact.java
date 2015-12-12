@@ -9,6 +9,7 @@ import org.mongodb.morphia.annotations.Embedded;
 import org.mongodb.morphia.annotations.Entity;
 import org.mongodb.morphia.annotations.Id;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -23,6 +24,7 @@ public class Contact implements EntityInterface {
     private String thirdname;
     private String birthday;
     @Embedded
+    //TODO: На будущее подумать над следующим: заменить списки телефонов и соц. на jsonObject'ы и посмотреть как будет проходить запись в монго. Необходимость - из-за того, что геттеры возвращают json'ы. по сути списки не особо нужны
     private
     List<Phone> phone;
     private String avatar;
@@ -49,6 +51,27 @@ public class Contact implements EntityInterface {
         this.avatar = avatar;
         this.owner = owner;
         this.social = social;
+    }
+
+    public Contact(JSONObject json) {
+        this.name = json.getString("name");
+        this.surname = json.getString("surname");
+        this.thirdname = json.getString("thirdname");
+        this.birthday = json.getString("birthday");
+        this.avatar = json.getString("avatar");
+        this.owner = json.getString("owner");
+
+        List<Phone> phones = new ArrayList<>();
+        List<Social> socials = new ArrayList<>();
+        JSONArray tmp = json.getJSONArray("phone");
+        for (int i = 0; i < tmp.length(); i++)
+            phones.add(new Phone(tmp.getJSONObject(i)));
+        tmp = json.getJSONArray("social");
+        for (int i = 0; i < tmp.length(); i++)
+            socials.add(new Social(tmp.getJSONObject(i)));
+        this.social = socials;
+        this.phone = phones;
+
     }
 
     public ObjectId get_id() {

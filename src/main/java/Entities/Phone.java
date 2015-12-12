@@ -1,5 +1,6 @@
 package Entities;
 
+import org.json.JSONObject;
 import org.mongodb.morphia.annotations.Embedded;
 
 /**
@@ -15,6 +16,10 @@ public class Phone {
         this.number = number;
     }
 
+    public Phone(JSONObject json) {
+        this.name = json.getString("name");
+        this.number = json.getString("number");
+    }
     public String getPhoneName() {
         return name;
     }

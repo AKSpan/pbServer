@@ -17,8 +17,6 @@ public class Access implements Filter {
 
     public void doFilter(ServletRequest req, ServletResponse resp, FilterChain chain) throws ServletException, IOException {
         System.out.println("Filter!");
-        HttpServletRequest hsr = (HttpServletRequest) req;
-        ServletContext sc = req.getServletContext();
         resp.setContentType("application/json;charset=UTF-8");
         String action = "";
         RequestDispatcher dispatcher;
@@ -28,7 +26,6 @@ public class Access implements Filter {
             action = json.getString("action");
         System.out.println("ACTION = " + action);
         try {
-
             switch (action) {
                 case "login":
                 case "registration":
@@ -51,11 +48,23 @@ public class Access implements Filter {
                     dispatcher = req.getServletContext().getRequestDispatcher("/GetContacts");
                     dispatcher.forward(req, resp);
                     break;
+                case "add":
+                    System.out.println("add: " + json);
+                    if (json!=null && json.has("contact")) {
+                        req.setAttribute("contact",json.getJSONObject("contact"));
+                        dispatcher = req.getServletContext().getRequestDispatcher("/AddContact");
+                        dispatcher.forward(req, resp);
+                    }
+                    else
+                    {
+                        //error bad request
+                    }
+
+                    break;
                 default:
                     System.out.println("def");
                     break;
             }
-            System.out.println(json);
             //  chain.doFilter(req, resp);
 
         } catch (Exception e) {

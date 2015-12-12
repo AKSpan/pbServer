@@ -1,5 +1,6 @@
 package Entities;
 
+import org.json.JSONObject;
 import org.mongodb.morphia.annotations.Embedded;
 
 @Embedded
@@ -11,6 +12,11 @@ class Social {
         this.name = name;
         this.url = url;
     }
+    public Social(JSONObject json) {
+        this.name = json.getString("name");
+        this.url = json.getString("url");
+    }
+
 
     public String getSocialName() {
         return name;

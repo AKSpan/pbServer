@@ -3,7 +3,6 @@ package Servlets;
 import Entities.UsersEntity;
 import dbAPI.Mongo;
 import org.json.JSONObject;
-import utils.GetDataFromRequest;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -28,7 +27,7 @@ public class Registration extends HttpServlet {
 
     private void worker(HttpServletRequest request, HttpServletResponse response) throws IOException {
         System.out.println("registration");
-        JSONObject json, answer = new JSONObject();
+        JSONObject answer = new JSONObject();
         String user, pass;
         try {
             if (request.getAttribute("user") != null && request.getAttribute("pass") != null) {

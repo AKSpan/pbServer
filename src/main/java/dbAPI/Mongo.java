@@ -15,7 +15,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.*;
 
-public class Mongo{
+public class Mongo {
 
     /*************************/
     private MongoCredential credential;
@@ -58,7 +58,7 @@ public class Mongo{
      */
     public List<?> find(Object clazz) {
         initException();
-        if(clazz.getClass().getSimpleName().equals(Contact.class.getSimpleName()))
+        if (clazz.getClass().getSimpleName().equals(Contact.class.getSimpleName()))
             return ds.find(clazz.getClass()).order("surname").asList();
         return ds.find(clazz.getClass()).asList();
     }
@@ -71,15 +71,13 @@ public class Mongo{
      * @param value Значение поля
      * @return {@link List}<{@link Contact}>
      */
-    public List<?> find(Object clazz,String field, String value) {
+    public List<?> find(Object clazz, String field, String value) {
         initException();
-        if(clazz.getClass().getSimpleName().equals(Contact.class.getSimpleName())) {
+        if (clazz.getClass().getSimpleName().equals(Contact.class.getSimpleName())) {
             return ds.find(clazz.getClass()).order("surname").field(field).contains(value).asList();
         }
         return ds.find(clazz.getClass()).field(field).contains(value).asList();
     }
-
-
 
 
     /**
@@ -93,9 +91,9 @@ public class Mongo{
             ds.save(record);
         } catch (DuplicateKeyException ex) {
             System.err.println("Запись " + record.toString() + " дублирует данные");
-            if(record.getClass().getSimpleName().equals(UsersEntity.class.getSimpleName()))
+            if (record.getClass().getSimpleName().equals(UsersEntity.class.getSimpleName()))
                 throw new IllegalArgumentException("Username already exists.");
-            if(record.getClass().getSimpleName().equals(Contact.class.getSimpleName()))
+            if (record.getClass().getSimpleName().equals(Contact.class.getSimpleName()))
                 throw new IllegalArgumentException("Cannot save record. Recording with this data already exists.");
         }
     }
