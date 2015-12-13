@@ -5,6 +5,7 @@ import utils.GetDataFromRequest;
 
 import javax.servlet.*;
 import javax.servlet.annotation.WebFilter;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.util.Objects;
@@ -17,14 +18,17 @@ public class Access implements Filter {
 
     public void doFilter(ServletRequest req, ServletResponse resp, FilterChain chain) throws ServletException, IOException {
         System.out.println("Filter!");
+        HttpServletRequest request = (HttpServletRequest)req;
         resp.setContentType("application/json;charset=UTF-8");
         String action = "";
         RequestDispatcher dispatcher;
         JSONObject user = null;
         JSONObject json = GetDataFromRequest.getJSON(req.getReader());
+        req.setAttribute("json",json);
         if (json != null && json.has("action"))
             action = json.getString("action");
         System.out.println("ACTION = " + action);
+        Cookie[] cookies = request.getCookies();
         try {
             switch (action) {
                 case "login":

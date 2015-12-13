@@ -2,10 +2,7 @@ package dbAPI;
 
 import Entities.Contact;
 import Entities.UsersEntity;
-import com.mongodb.DuplicateKeyException;
-import com.mongodb.MongoClient;
-import com.mongodb.MongoCredential;
-import com.mongodb.ServerAddress;
+import com.mongodb.*;
 import org.mongodb.morphia.Datastore;
 import org.mongodb.morphia.Morphia;
 import org.mongodb.morphia.query.Query;

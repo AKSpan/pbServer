@@ -6,6 +6,7 @@ import dbAPI.Mongo;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import utils.GetDataFromRequest;
+import utils.UpdateCookie;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -21,7 +22,7 @@ import java.util.Map;
  * Создано Span 24.11.2015.
  */
 @WebServlet(name = "GetContacts", urlPatterns = "/GetContacts", displayName = "GetContacts")
-public class GetContacts extends HttpServlet {
+public class GetContacts extends HttpServlet{
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         worker(request, response);
     }
@@ -49,13 +50,14 @@ public class GetContacts extends HttpServlet {
                 answer.put("code", 400);
             } else {
                 try {
+                    UpdateCookie.updateCookies(request, response);
                     Mongo mongo = new Mongo();
                     mongo.initMongoConnect();
                     List<UsersEntity> currUser = (List<UsersEntity>) mongo.find(new UsersEntity(), "session", session);
                     if (currUser.size() > 0)
                         owner = currUser.get(0).getUsername();
 
-                    JSONObject joReq = GetDataFromRequest.getJSON(request.getReader());
+                    JSONObject joReq = (JSONObject) request.getAttribute("json");
                     System.out.println("json getcontacts = "+joReq);
 
                     List<Contact> DBcontacts = (List<Contact>) mongo.find(new Contact(), "owner", owner);
@@ -108,4 +110,5 @@ public class GetContacts extends HttpServlet {
         PrintWriter out = response.getWriter();
         out.println(answer);
     }
+
 }

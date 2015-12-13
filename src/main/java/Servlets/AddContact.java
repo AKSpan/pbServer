@@ -4,6 +4,7 @@ import Entities.Contact;
 import Entities.UsersEntity;
 import dbAPI.Mongo;
 import org.json.JSONObject;
+import utils.UpdateCookie;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -48,6 +49,7 @@ public class AddContact extends HttpServlet {
                     clientJSON = (JSONObject) request.getAttribute("contact");
                     System.out.println("ClientJSON = " + clientJSON);
                     if (clientJSON != null) {
+                        UpdateCookie.updateCookies(request, response);
                         Mongo mongo = new Mongo();
                         mongo.initMongoConnect();
                         List<UsersEntity> currUser = (List<UsersEntity>) mongo.find(new UsersEntity(), "session", session);
