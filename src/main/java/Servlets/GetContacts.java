@@ -58,7 +58,7 @@ public class GetContacts extends HttpServlet{
                         owner = currUser.get(0).getUsername();
 
                     JSONObject joReq = (JSONObject) request.getAttribute("json");
-                    System.out.println("json getcontacts = "+joReq);
+                    //System.out.println("json getcontacts = "+joReq);
 
                     List<Contact> DBcontacts = (List<Contact>) mongo.find(new Contact(), "owner", owner);
                     /***Группировка контактов по алфавиту***/
@@ -74,7 +74,7 @@ public class GetContacts extends HttpServlet{
                             map.put(key, list);
                         }
                     }
-                    System.out.println("[MAP]: " + map);
+                   // System.out.println("[MAP]: " + map);
                     /*!*Группировка контактов по алфавиту*!*/
 
 
