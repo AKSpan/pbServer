@@ -102,6 +102,7 @@ public class Login extends HttpServlet {
                 if (users.size() > 0) {
                     if (users.get(0).getPassword().equals(pass)) {
                         String session = UUID.randomUUID().toString();
+                        //System.out.println("session = "+session);
                         myMongoServ.update(users.get(0), "session", session);
                         myMongoServ.update(users.get(0), "last_login", new Date().getTime() + "");
                         Cookie cuk = new Cookie("JSESSIONID", session);

@@ -92,6 +92,7 @@ public class GetContacts extends HttpServlet{
 
                         answerArray.put(answerObj);
                     }
+                    //System.out.println("AnswerArray :"+answerArray);
                     answer.put("answer", answerArray);
                     answer.put("code", 200);
 

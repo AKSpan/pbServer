@@ -54,6 +54,7 @@ public class Contact implements EntityInterface {
     }
 
     public Contact(JSONObject json) {
+        this._id = (ObjectId) json.get("_id");
         this.name = json.getString("name");
         this.surname = json.getString("surname");
         this.thirdname = json.getString("thirdname");
@@ -143,6 +144,18 @@ public class Contact implements EntityInterface {
         Gson gson = new Gson();
         try {
             request = new JSONObject(gson.toJson(this));
+            //System.out.println("toJSON() = " + request);
+            JSONObject joID = request.getJSONObject("_id");
+            ObjectId _id = new ObjectId(joID.getInt("timestamp"),
+                    joID.getInt("machineIdentifier"),
+                    (short) joID.getInt("processIdentifier"),
+                    joID.getInt("counter"));
+            //System.out.println(" _id.toString() = "+ _id.toString());
+            request.put("_id", _id.toString());
+            request.remove("birthday");
+            request.remove("phone");
+            request.remove("owner");
+            request.remove("social");
         } catch (JSONException e) {
             e.printStackTrace();
         }

@@ -3,6 +3,7 @@ package dbAPI;
 import Entities.Contact;
 import Entities.UsersEntity;
 import com.mongodb.*;
+import org.bson.types.ObjectId;
 import org.mongodb.morphia.Datastore;
 import org.mongodb.morphia.Morphia;
 import org.mongodb.morphia.query.Query;
@@ -75,6 +76,10 @@ public class Mongo {
         }
         return ds.find(clazz.getClass()).field(field).contains(value).asList();
     }
+    public Object find(Object clazz,ObjectId _id) {
+        initException();
+
+        return ds.find(clazz.getClass()).field("_id").equal(_id).get();}
 
 
     /**
@@ -154,7 +159,7 @@ public class Mongo {
         Query<Contact> query = ds.createQuery(Contact.class);
         while (it.hasNext()) {
             Map.Entry pair = (Map.Entry) it.next();
-            System.out.println(pair.getKey() + " = " + pair.getValue());
+            //System.out.println(pair.getKey() + " = " + pair.getValue());
             query.filter(pair.getKey() + "", pair.getValue());
             it.remove(); // avoids a ConcurrentModificationException
         }

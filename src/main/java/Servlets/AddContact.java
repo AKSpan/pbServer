@@ -40,7 +40,6 @@ public class AddContact extends HttpServlet {
 
     private void worker(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         System.out.println("addContact");
-
         JSONObject answer = new JSONObject(), clientJSON;
 
         Cookie[] cookies = request.getCookies();

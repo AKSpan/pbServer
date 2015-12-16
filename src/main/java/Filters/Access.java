@@ -18,13 +18,13 @@ public class Access implements Filter {
 
     public void doFilter(ServletRequest req, ServletResponse resp, FilterChain chain) throws ServletException, IOException {
         System.out.println("Filter!");
-        HttpServletRequest request = (HttpServletRequest)req;
+        HttpServletRequest request = (HttpServletRequest) req;
         resp.setContentType("application/json;charset=UTF-8");
         String action = "";
         RequestDispatcher dispatcher;
         JSONObject user = null;
         JSONObject json = GetDataFromRequest.getJSON(req.getReader());
-        req.setAttribute("json",json);
+        req.setAttribute("json", json);
         if (json != null && json.has("action"))
             action = json.getString("action");
         System.out.println("ACTION = " + action);
@@ -54,16 +54,23 @@ public class Access implements Filter {
                     break;
                 case "add":
                     System.out.println("add: " + json);
-                    if (json!=null && json.has("contact")) {
-                        req.setAttribute("contact",json.getJSONObject("contact"));
+                    if (json != null && json.has("contact")) {
+                        req.setAttribute("contact", json.getJSONObject("contact"));
                         dispatcher = req.getServletContext().getRequestDispatcher("/AddContact");
                         dispatcher.forward(req, resp);
-                    }
-                    else
-                    {
+                    } else {
                         //error bad request
                     }
 
+                    break;
+                case "show":
+                    if (json != null && json.has("id")) {
+                        req.setAttribute("id", json.getString("id"));
+                        dispatcher = req.getServletContext().getRequestDispatcher("/ShowContact");
+                        dispatcher.forward(req, resp);
+                    } else {
+                        //error bad request
+                    }
                     break;
                 default:
                     System.out.println("def");
