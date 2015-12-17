@@ -22,7 +22,7 @@ import java.util.Map;
  * Создано Span 24.11.2015.
  */
 @WebServlet(name = "GetContacts", urlPatterns = "/GetContacts", displayName = "GetContacts")
-public class GetContacts extends HttpServlet{
+public class GetContacts extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         worker(request, response);
     }
@@ -56,15 +56,13 @@ public class GetContacts extends HttpServlet{
                     List<UsersEntity> currUser = (List<UsersEntity>) mongo.find(new UsersEntity(), "session", session);
                     if (currUser.size() > 0)
                         owner = currUser.get(0).getUsername();
-
                     JSONObject joReq = (JSONObject) request.getAttribute("json");
-                    //System.out.println("json getcontacts = "+joReq);
-
                     List<Contact> DBcontacts = (List<Contact>) mongo.find(new Contact(), "owner", owner);
                     /***Группировка контактов по алфавиту***/
                     Map<String, List<Contact>> map = new HashMap<>();
                     for (Contact contact : DBcontacts) {
-                        String key = contact.getSurname().substring(0, 1);
+                        String fio = contact.getSurname() + contact.getName() + contact.getThirdname();
+                        String key = (fio.length() > 0) ? fio.substring(0, 1) : "Unnamed";
                         if (map.containsKey(key)) {
                             List<Contact> list = map.get(key);
                             list.add(contact);
@@ -74,10 +72,7 @@ public class GetContacts extends HttpServlet{
                             map.put(key, list);
                         }
                     }
-                   // System.out.println("[MAP]: " + map);
                     /*!*Группировка контактов по алфавиту*!*/
-
-
                     for (Map.Entry<String, List<Contact>> stringListEntry : map.entrySet()) {
                         Map.Entry thisEntry = (Map.Entry) stringListEntry;
                         String currKey = thisEntry.getKey().toString();

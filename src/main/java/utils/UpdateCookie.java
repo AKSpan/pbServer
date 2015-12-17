@@ -9,7 +9,7 @@ import java.io.IOException;
  * Created by Alexey on 13.12.2015.
  */
 public class UpdateCookie {
-    public static final int COOKIE_MAX_AGE = 300;
+    public static final int COOKIE_MAX_AGE = 600;
     public static void updateCookies(HttpServletRequest request, HttpServletResponse response) throws IOException {
         Cookie[] cukizz = request.getCookies();
 

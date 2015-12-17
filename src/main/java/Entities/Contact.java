@@ -79,7 +79,7 @@ public class Contact implements EntityInterface {
         return _id;
     }
 
-    private String getName() {
+    public String getName() {
         return name == null ? "" : name;
     }
 
@@ -87,7 +87,7 @@ public class Contact implements EntityInterface {
         return surname == null ? "" : surname;
     }
 
-    private String getThirdname() {
+    public String getThirdname() {
         return thirdname == null ? "" : thirdname;
     }
 

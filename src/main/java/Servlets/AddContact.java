@@ -3,6 +3,7 @@ package Servlets;
 import Entities.Contact;
 import Entities.UsersEntity;
 import dbAPI.Mongo;
+import org.bson.types.ObjectId;
 import org.json.JSONObject;
 import utils.UpdateCookie;
 
@@ -55,11 +56,8 @@ public class AddContact extends HttpServlet {
             } else {
                 try {
                     clientJSON = (JSONObject) request.getAttribute("contact");
-                    //System.out.println("ClientJSON = " + clientJSON);
-                    String avatar = clientJSON.getString("avatar"), imagePath = "";
-
-
-                    if (clientJSON != null) {
+                    if (clientJSON.length() > 0) {
+                        String avatar = clientJSON.getString("avatar"), imagePath = "";
                         UpdateCookie.updateCookies(request, response);
                         Mongo mongo = new Mongo();
                         mongo.initMongoConnect();
@@ -67,37 +65,13 @@ public class AddContact extends HttpServlet {
                         if (currUser.size() > 0) {
                             owner = currUser.get(0).getUsername();
 
-                            if (avatar.contains(DEFAULT_AVATAR))
-                                imagePath = avatar;
-                            else {
-                                String imageDataBytes = avatar.substring(avatar.indexOf(",") + 1);
-                                byte[] avaBase64 = Base64.getDecoder().decode(imageDataBytes.getBytes());
-                                String path = "D:\\Phonebook\\" + owner + "\\img";
-                                File ownerFolder = new File(path);
-                                boolean canSave;
-                                if (ownerFolder.exists())
-                                    canSave = true;
-                                else {
-                                    ownerFolder.mkdirs();
-                                    canSave = true;
-                                }
-                                if (canSave) {
-                                    String filename = new BigInteger(130, new SecureRandom()).toString(32);
-                                    FileOutputStream fos = new FileOutputStream(path + "\\" + filename + ".jpg");
-                                    try {
-                                        fos.write(avaBase64);
-                                        clientJSON.put("avatar", path + "\\" + filename + ".jpg");
-                                    } finally {
-                                        fos.close();
-                                    }
-                                }
-
-                            }
-
                             clientJSON.put("owner", owner);
+                            ObjectId _id = new ObjectId();
+                            System.out.println("objectId = " + _id.toString());
+                            clientJSON.put("_id", _id);
                             Contact contact = new Contact(clientJSON);
                             mongo.save(contact);
-                            answer.put("answer", "Success registration");
+                            answer.put("answer", "Contact added!");
                             answer.put("code", 200);
                         } else {
                             ///onwer not found
