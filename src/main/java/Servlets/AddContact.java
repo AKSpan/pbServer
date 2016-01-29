@@ -25,7 +25,7 @@ import java.util.Base64;
 import java.util.List;
 
 /**
- * Created by Alexey on 13.12.2015.
+ * Создано Alexey 13.12.2015.
  */
 @WebServlet(name = "AddContact", urlPatterns = "/AddContact")
 public class AddContact extends HttpServlet {

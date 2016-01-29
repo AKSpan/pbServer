@@ -35,17 +35,27 @@ public class Login extends HttpServlet {
     private void worker(HttpServletRequest request, HttpServletResponse response) throws IOException {
         System.out.println("Login servlet!");
         JSONObject answer = new JSONObject();
-        String user, pass;
+        String user, pass, session = null;
+        Cookie[] cookies = request.getCookies();
+        if (cookies != null)
+            for (Cookie cookie : cookies)
+                if (cookie.getName().equals("JSESSIONID"))
+                    session = cookie.getValue();
         try {
-
-            if (request.getAttribute("user") != null && request.getAttribute("pass") != null) {
-                user = request.getAttribute("user").toString();
-                pass = request.getAttribute("pass").toString();
-                System.out.println(user + " / " + pass);
-                authenticationByPassword(request, response, answer, user, pass);
+            //Auth by cookie session
+            if (session != null) {
+                authenticationBySession(response, answer, session);
             } else {
-                answer.put("answer", "Bad request. No fields \"user\" or \"pass\" in request!");
-                answer.put("code", 400);
+                //try auth by pass and name
+                if (request.getAttribute("user") != null && request.getAttribute("pass") != null) {
+                    user = request.getAttribute("user").toString();
+                    pass = request.getAttribute("pass").toString();
+                    System.out.println(user + " / " + pass);
+                    authenticationByPassword(request, response, answer, user, pass);
+                } else {
+                    answer.put("answer", "Bad request. No fields \"user\" or \"pass\" in request!");
+                    answer.put("code", 400);
+                }
             }
         } catch (Exception e) {
             answer.put("answer", "Server error: " + e.toString());
@@ -79,7 +89,7 @@ public class Login extends HttpServlet {
             answer.put("answer", "Auth by session is correct!");
             answer.put("code", 200);
         } else {
-            answer.put("answer", "Username or password is invalid!");
+            answer.put("answer", "User session incorrect!");
             answer.put("code", 401);
         }
 

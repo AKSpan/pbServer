@@ -6,7 +6,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 /**
- * Created by Alexey on 13.12.2015.
+ * Создано Alexey 13.12.2015.
  */
 public class UpdateCookie {
     public static final int COOKIE_MAX_AGE = 600;
